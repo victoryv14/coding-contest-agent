@@ -1,0 +1,13 @@
+# Web Framework & ASGI Server
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+
+# Asynchronous HTTP Client (for REST and GraphQL API requests)
+httpx>=0.27.0
+
+# Calendar RFC-5545 Feed Generation
+icalendar>=5.0.12
+
+# Timezone and Date Parsing Utilities
+python-dateutil>=2.9.0
+pytz>=2024.1

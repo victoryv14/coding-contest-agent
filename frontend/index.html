@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContestPulse — Never Miss a Coding Contest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center font-bold text-lg shadow-lg shadow-brand-500/20">
+          ⚡
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            ContestPulse
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> Live Alarms
+            </span>
+          </h1>
+          <p class="text-xs text-slate-400">100% Free · 1-Click Calendar Add · Native Alarms</p>
+        </div>
+      </div>
+      <a href="https://github.com/victoryv14/coding-contest-agent" target="_blank" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
+
+    <!-- Hero Setup Card -->
+    <section class="bg-gradient-to-b from-slate-900 to-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-24 -right-24 w-72 h-72 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-2xl space-y-2">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          Never miss a coding round again.
+        </h2>
+        <p class="text-sm text-slate-300 leading-relaxed">
+          Filter your preferred platforms and divisions below. Click <strong class="text-brand-400">"Add to Google Calendar"</strong> on any contest to open Google Calendar with the relevant title, timings, and alarms pre-filled!
+        </p>
+      </div>
+
+      <!-- Preference Controls -->
+      <div class="mt-6 pt-6 border-t border-slate-800 space-y-6">
+        
+        <!-- Platform & Particular Contest Categories -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">1. Filter Platforms & Contest Types</label>
+            <span class="text-xs text-brand-400 font-medium cursor-pointer hover:underline" onclick="toggleSelectAll()">Toggle All</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- Codeforces Card -->
+            <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 space-y-3">
+              <label class="cursor-pointer flex items-center justify-between select-none">
+                <span class="text-sm font-bold text-blue-400 flex items-center gap-2">
+                  <input type="checkbox" id="plat-cf" checked class="w-4 h-4 rounded text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500" onchange="togglePlatform('cf')">
+                  Codeforces
+                </span>
+                <span class="text-[11px] text-slate-500 font-mono">CF</span>
+              </label>
+              <div id="divs-cf" class="flex flex-wrap gap-1.5 pl-6">
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codeforces" value="div. 1" checked onchange="updateFilters()"> Div. 1
+                </label>
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codeforces" value="div. 2" checked onchange="updateFilters()"> Div. 2
+                </label>
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codeforces" value="div. 3" checked onchange="updateFilters()"> Div. 3
+                </label>
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codeforces" value="div. 4" checked onchange="updateFilters()"> Div. 4
+                </label>
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codeforces" value="educational" checked onchange="updateFilters()"> Educational
+                </label>
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codeforces" value="global" checked onchange="updateFilters()"> Global
+                </label>
+              </div>
+            </div>
+
+            <!-- LeetCode Card -->
+            <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 space-y-3">
+              <label class="cursor-pointer flex items-center justify-between select-none">
+                <span class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                  <input type="checkbox" id="plat-lc" checked class="w-4 h-4 rounded text-amber-500 bg-slate-900 border-slate-700 focus:ring-amber-500" onchange="togglePlatform('lc')">
+                  LeetCode
+                </span>
+                <span class="text-[11px] text-slate-500 font-mono">LC</span>
+              </label>
+              <div id="divs-lc" class="flex flex-wrap gap-1.5 pl-6">
+                <label class="text-xs cursor-pointer px-2.5 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="leetcode" value="weekly" checked onchange="updateFilters()"> Weekly Contest
+                </label>
+                <label class="text-xs cursor-pointer px-2.5 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="leetcode" value="biweekly" checked onchange="updateFilters()"> Biweekly Contest
+                </label>
+              </div>
+            </div>
+
+            <!-- CodeChef Card -->
+            <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 space-y-3">
+              <label class="cursor-pointer flex items-center justify-between select-none">
+                <span class="text-sm font-bold text-yellow-300 flex items-center gap-2">
+                  <input type="checkbox" id="plat-cc" checked class="w-4 h-4 rounded text-yellow-500 bg-slate-900 border-slate-700 focus:ring-yellow-500" onchange="togglePlatform('cc')">
+                  CodeChef
+                </span>
+                <span class="text-[11px] text-slate-500 font-mono">CC</span>
+              </label>
+              <div id="divs-cc" class="flex flex-wrap gap-1.5 pl-6">
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codechef" value="starters" checked onchange="updateFilters()"> Starters
+                </label>
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codechef" value="monday munch" checked onchange="updateFilters()"> DSA Monday Munch
+                </label>
+                <label class="text-xs cursor-pointer px-2 py-1 rounded-md border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 select-none">
+                  <input type="checkbox" class="div-cb" data-platform="codechef" value="cook-off" checked onchange="updateFilters()"> Cook-Off
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Alarm Settings -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">2. Custom Event Title / Alarm Prefix</label>
+            <input 
+              type="text" 
+              id="alarm-name-input" 
+              value="🚨 Contest Alert" 
+              placeholder="e.g. 🚨 Contest Alert"
+              oninput="updateFilters()"
+              class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-brand-500 outline-none placeholder-slate-500"
+            />
+            <p class="text-[11px] text-slate-400">This prefix will appear in your Google Calendar event title.</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">3. Default Alarm Timing</label>
+            <select id="alarm-select" onchange="updateFilters()" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-brand-500 outline-none">
+              <option value="15" selected>15 minutes before</option>
+              <option value="30">30 minutes before</option>
+              <option value="60">1 hour before</option>
+            </select>
+            <p class="text-[11px] text-slate-400">Trigger offset for .ics feed downloads.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="mt-6 pt-6 border-t border-slate-800 flex flex-wrap gap-3">
+        <a id="btn-next-gcal" href="#" target="_blank" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-sm transition transform active:scale-95 text-center min-w-[220px]">
+          <span>📅</span> Add Next Round to Google Calendar
+        </a>
+        <a id="btn-download" href="#" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-sm font-medium transition flex items-center justify-center gap-2">
+          <span>⬇️</span> Download All (.ics)
+        </a>
+        <a id="btn-apple" href="#" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-sm font-medium transition flex items-center justify-center gap-2">
+          <span>🍏</span> Subscribe (iPhone)
+        </a>
+        <button onclick="copySubscriptionUrl()" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-sm font-medium transition flex items-center justify-center gap-2">
+          <span id="copy-icon">🔗</span> <span id="copy-text">Copy Feed Link</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Contest Schedule Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+          Upcoming Contests
+          <span id="contest-count" class="text-xs bg-brand-500/10 text-brand-400 border border-brand-500/20 px-2 py-0.5 rounded-full font-mono">0</span>
+        </h3>
+        <p class="text-xs text-slate-400">Click <strong>"Add to Google Calendar"</strong> on any round to open the pre-filled event popup</p>
+      </div>
+      <button onclick="loadContests(true)" class="text-xs text-brand-400 hover:text-brand-300 font-medium flex items-center gap-1 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+        <span>🔄</span> Refresh
+      </button>
+    </div>
+
+    <!-- Contest Cards Grid -->
+    <div id="contests-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="col-span-full py-12 text-center text-slate-500">
+        <div class="inline-block animate-spin text-2xl mb-2">⚡</div>
+        <p class="text-sm">Fetching upcoming rounds from Codeforces, LeetCode, and CodeChef...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+    ContestPulse · 100% Free Open Source Coding Contest Agent
+  </footer>
+
+  <script>
+    let rawContests = [];
+
+    function togglePlatform(key) {
+      const isChecked = document.getElementById(`plat-${key}`).checked;
+      const divsContainer = document.getElementById(`divs-${key}`);
+      divsContainer.style.opacity = isChecked ? '1' : '0.4';
+      divsContainer.style.pointerEvents = isChecked ? 'auto' : 'none';
+      
+      const cbs = divsContainer.querySelectorAll('input.div-cb');
+      cbs.forEach(cb => cb.checked = isChecked);
+
+      updateFilters();
+    }
+
+    function toggleSelectAll() {
+      const allCbs = document.querySelectorAll('input[type="checkbox"]');
+      const anyUnchecked = Array.from(allCbs).some(cb => !cb.checked);
+      allCbs.forEach(cb => cb.checked = anyUnchecked);
+      
+      ['cf', 'lc', 'cc'].forEach(k => {
+        const divs = document.getElementById(`divs-${k}`);
+        divs.style.opacity = anyUnchecked ? '1' : '0.4';
+        divs.style.pointerEvents = anyUnchecked ? 'auto' : 'none';
+      });
+
+      updateFilters();
+    }
+
+    function getSelectedPlatforms() {
+      const selected = [];
+      if (document.getElementById('plat-cf').checked) selected.push('codeforces');
+      if (document.getElementById('plat-lc').checked) selected.push('leetcode');
+      if (document.getElementById('plat-cc').checked) selected.push('codechef');
+      return selected;
+    }
+
+    function getSelectedDivisions() {
+      const activePlatforms = getSelectedPlatforms();
+      const selectedDivs = [];
+      const divCbs = document.querySelectorAll('input.div-cb:checked');
+      divCbs.forEach(cb => {
+        const platform = cb.getAttribute('data-platform');
+        if (activePlatforms.includes(platform)) {
+          selectedDivs.push(cb.value);
+        }
+      });
+      return selectedDivs;
+    }
+
+    function getAlarmMinutes() {
+      return document.getElementById('alarm-select').value || '15';
+    }
+
+    function getAlarmPrefix() {
+      const input = document.getElementById('alarm-name-input');
+      return (input && input.value.trim()) ? input.value.trim() : '🚨 Contest Alert';
+    }
+
+    function formatGCalDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+    }
+
+    function buildGoogleCalendarUrl(contest) {
+      const prefix = getAlarmPrefix();
+      const title = `${prefix}: [${contest.platform.toUpperCase()}] ${contest.title}`;
+      const startIso = formatGCalDate(contest.start_time);
+      const endIso = formatGCalDate(contest.end_time);
+      const details = `Platform: ${contest.platform.toUpperCase()}\nCategory: ${contest.division || 'Open'}\nLink: ${contest.url}\n\nAutomated contest reminder by ContestPulse.`;
+
+      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(contest.url)}`;
+    }
+
+    function getSubscriptionUrl() {
+      const platforms = getSelectedPlatforms().join(',');
+      const divisions = getSelectedDivisions().join(',');
+      const alarm = getAlarmMinutes();
+      const alarmName = encodeURIComponent(getAlarmPrefix());
+      const origin = window.location.origin;
+
+      let url = `${origin}/calendar.ics?platforms=${encodeURIComponent(platforms)}&alarm=${alarm}&alarm_name=${alarmName}`;
+      if (divisions) {
+        url += `&divisions=${encodeURIComponent(divisions)}`;
+      }
+      return url;
+    }
+
+    function updateFilters() {
+      const subUrl = getSubscriptionUrl();
+
+      // Download direct link
+      document.getElementById('btn-download').href = subUrl;
+
+      // WebCal link for iOS Safari / Apple Calendar
+      const webcalUrl = subUrl.replace(/^https?:\/\//, 'webcal://');
+      document.getElementById('btn-apple').href = webcalUrl;
+
+      renderContests();
+    }
+
+    function copySubscriptionUrl() {
+      const url = getSubscriptionUrl();
+      navigator.clipboard.writeText(url).then(() => {
+        const textSpan = document.getElementById('copy-text');
+        textSpan.innerText = 'Copied!';
+        setTimeout(() => textSpan.innerText = 'Copy Link', 2000);
+      });
+    }
+
+    function formatCountdown(targetDate) {
+      const diff = new Date(targetDate) - new Date();
+      if (diff <= 0) return 'Started!';
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / 1000 / 60) % 60);
+      
+      if (days > 0) return `${days}d ${hours}h ${mins}m`;
+      return `${hours}h ${mins}m`;
+    }
+
+    function getPlatformBadge(platform) {
+      switch (platform.toLowerCase()) {
+        case 'codeforces':
+          return '<span class="px-2 py-0.5 rounded text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">Codeforces</span>';
+        case 'leetcode':
+          return '<span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">LeetCode</span>';
+        case 'codechef':
+          return '<span class="px-2 py-0.5 rounded text-xs font-bold bg-yellow-500/10 text-yellow-300 border border-yellow-500/20">CodeChef</span>';
+        default:
+          return `<span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-700 text-slate-300">${platform}</span>`;
+      }
+    }
+
+    function renderContests() {
+      const grid = document.getElementById('contests-grid');
+      const selectedPlatforms = getSelectedPlatforms();
+      const selectedDivs = getSelectedDivisions().map(d => d.toLowerCase());
+
+      const filtered = rawContests.filter(c => {
+        if (!selectedPlatforms.includes(c.platform.toLowerCase())) return false;
+        if (selectedDivs.length > 0 && c.division) {
+          const divLower = c.division.toLowerCase();
+          const matches = selectedDivs.some(d => divLower.includes(d));
+          if (!matches) return false;
+        }
+        return true;
+      });
+
+      document.getElementById('contest-count').innerText = filtered.length;
+
+      // Update the "Add Next Round to Google Calendar" button in the hero card
+      const btnNextGcal = document.getElementById('btn-next-gcal');
+      if (filtered.length > 0) {
+        btnNextGcal.href = buildGoogleCalendarUrl(filtered[0]);
+        btnNextGcal.classList.remove('opacity-50', 'pointer-events-none');
+        btnNextGcal.innerHTML = `<span>📅</span> Add Next: ${filtered[0].title.substring(0, 22)}...`;
+      } else {
+        btnNextGcal.classList.add('opacity-50', 'pointer-events-none');
+        btnNextGcal.innerHTML = `<span>📅</span> No Matching Contests`;
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-500 bg-slate-900/40 rounded-xl border border-slate-800">
+            <p class="text-sm font-medium">No upcoming contests found matching your selected platforms and contest types.</p>
+            <p class="text-xs text-slate-600 mt-1">Try selecting more divisions above.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(c => {
+        const start = new Date(c.start_time);
+        const durationHours = (c.duration_seconds / 3600).toFixed(1);
+        const gcalUrl = buildGoogleCalendarUrl(c);
+
+        return `
+          <div class="bg-slate-900/80 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-4 flex flex-col justify-between transition shadow-sm hover:shadow-md group">
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                ${getPlatformBadge(c.platform)}
+                <span class="text-xs font-bold text-emerald-400 mono bg-emerald-500/10 px-2 py-0.5 rounded">
+                  ⏳ ${formatCountdown(c.start_time)}
+                </span>
+              </div>
+              <h4 class="font-bold text-sm text-white group-hover:text-brand-300 transition line-clamp-2">
+                ${c.title}
+              </h4>
+              <div class="text-xs text-slate-400 space-y-1">
+                <div>📅 ${start.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                <div>⏰ ${start.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} (${durationHours} hrs)</div>
+                ${c.division ? `<div class="text-slate-400 font-medium">🏷️ Category: <span class="text-brand-400">${c.division}</span></div>` : ''}
+              </div>
+            </div>
+
+            <!-- Action Buttons for this Contest -->
+            <div class="mt-4 pt-3 border-t border-slate-800/80 space-y-2">
+              <a href="${gcalUrl}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-3 rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95 text-center">
+                <span>📅</span> Add to Google Calendar
+              </a>
+              <div class="flex items-center justify-between pt-1">
+                <a href="${c.url}" target="_blank" class="text-xs font-medium text-slate-400 hover:text-white transition flex items-center gap-1">
+                  View Contest Page &rarr;
+                </a>
+                <span class="text-[10px] text-slate-500">Auto-fills title & times</span>
+              </div>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadContests(force = false) {
+      try {
+        const res = await fetch(`/api/contests${force ? '?force_refresh=true' : ''}`);
+        rawContests = await res.json();
+        renderContests();
+      } catch (err) {
+        console.error('Failed to load contests:', err);
+      }
+    }
+
+    // Initial load
+    updateFilters();
+    loadContests();
+
+    // Auto-update countdown every 60 seconds
+    setInterval(renderContests, 60000);
+  </script>
+</body>
+</html>

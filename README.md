@@ -1,82 +1,117 @@
-# coding-contest-agent (Codename: UpsolveAgent)
+# ContestPulse (coding-contest-agent)
 
-## Problem Statement
-> **How might we turn competitive coding contests from missed calendar events into an automated growth loop: effortlessly syncing upcoming rounds to any phone or laptop calendar with timely alarms, and delivering a clean AI post-mortem report that diagnoses submission mistakes and guides upsolving?**
-
----
-
-## Recommended Direction: Installable Progressive Web App (PWA) + AI Upsolve Engine
-
-Built specifically as an interactive, showcase-ready mini-project that **anyone can install on their phone or laptop within 10 seconds** without touching a terminal or configuring API keys.
-
-1. **Installable Anywhere (PWA Architecture):**
-   - **On Phones (iOS / Android):** Visitors tap *"Install"* or *"Add to Home Screen"* to install the app with an icon, opening full-screen like a native mobile app.
-   - **On Laptops (Windows / macOS):** Users can install it via Chrome/Edge into a dedicated standalone desktop app window.
-   - **Zero Setup Friction:** Evaluators and peers can test it live via a single URL or QR code without running code locally.
-
-2. **Pre-Contest: Live Contest Hub & 1-Click Calendar Alarms:**
-   - Aggregates upcoming contests across **LeetCode** and **Codeforces** with live countdown timers and platform filters.
-   - **1-Click Calendar Sync:** Generates an `.ics` event or Google Calendar link with built-in alarms (e.g., 2 hours and 15 minutes before) so users receive native phone and laptop notifications.
-
-3. **Post-Contest: AI Blunder Diagnosis & Socratic Upsolving:**
-   - The user inputs their LeetCode or Codeforces handle.
-   - The agent retrieves their latest contest submissions live via public APIs.
-   - When a problem was attempted and failed (or unsolved), the AI agent compares their submission against the official contest editorial and produces:
-     - **Blunder Diagnosis:** Pinpoints why the code failed (e.g., $O(N^2)$ Time Limit Exceeded, integer overflow, missed edge case).
-     - **Interactive Socratic Hints:** 3 progressive, spoiler-free hints that encourage the user to solve it themselves before revealing the solution.
-     - **Rebound Practice:** Links to 2 similar past contest problems to reinforce the concept.
-     - **Exportable Markdown Report:** A clean, downloadable Markdown debrief file for the user's personal notes.
+> **A 100% free, one-time setup contest calendar agent that syncs upcoming rounds from Codeforces, LeetCode, and CodeChef directly to your smartphone with native 15-minute phone alarms.**
 
 ---
 
-## Key Assumptions to Validate
+## 🎯 Problem Statement
+Competitive programmers often miss scheduled rounds because:
+* Chat group reminders (Telegram, Discord, WhatsApp) get buried under message noise.
+* Automated phone calls and SMS require expensive paid telecom APIs (Twilio, Exotel).
+* Manually adding individual contests to Google Calendar is tedious and easy to forget.
 
-- [ ] **Assumption 1 (PWA Install Experience):** The app manifest and service worker allow seamless "Add to Home Screen" on both Android (Chrome) and iOS (Safari) with a responsive, app-like UI.  
-  *How to test:* Deploy a minimal PWA template and verify installation flow on both a smartphone and a laptop.
-- [ ] **Assumption 2 (Zero-Auth Platform Scraping):** Codeforces REST API and LeetCode GraphQL API can reliably retrieve a user's recent contest submissions and verdicts without requiring passwords or private session cookies.  
-  *How to test:* Prototype API requests fetching recent contest submissions for a public handle.
-- [ ] **Assumption 3 (AI Editorial Grounding):** The Gemini free-tier API can accurately diagnose submission blunders and formulate spoiler-free hints when conditioned on the official contest editorial.  
-  *How to test:* Run sample failed submissions through the prompt with official editorials and evaluate diagnostic precision.
-
----
-
-## MVP Scope (v1)
-
-### What's In:
-1. **Frontend (Installable PWA):**
-   - Clean, modern, responsive UI (dark-mode friendly for programmers).
-   - "Install App" prompt banner for phones and laptops.
-   - Upcoming Contest Tab: Cards displaying contest names, start times, durations, and countdowns.
-   - 1-Click "Add to Calendar" button (downloads `.ics` file with `-2h` and `-15m` alarms or opens Google Calendar).
-2. **AI Post-Contest Debrief Tab:**
-   - Handle input field (LeetCode / Codeforces).
-   - Contest submission selector showing solved vs. failed problems.
-   - Interactive debrief card displaying:
-     - Topic tags (e.g., *Dynamic Programming, Prefix Sums*).
-     - Failure analysis (e.g., *TLE on test case 14: nested loop over $10^5$ items*).
-     - Accordion-style collapsible Socratic hints.
-     - "Download Markdown Report" button.
-3. **Backend Service (Python FastAPI):**
-   - Live scraper endpoint for upcoming LeetCode & Codeforces contests.
-   - User contest submission fetcher (Codeforces API + LeetCode public GraphQL).
-   - AI debrief generator endpoint powered by Google Gemini API.
-4. **Cloud Deployment:**
-   - Free deployment configuration (e.g., Render / Hugging Face Spaces / Vercel) providing a live public URL ready for presentation.
+**ContestPulse** solves this with a **zero-cost, one-time setup live calendar subscription feed (`.ics` / WebCal)** and **1-click Google Calendar Event Popups**. Users configure their platform and division preferences once, and their phone calendar automatically stays up to date with loud alarms ringing 15 minutes before every round.
 
 ---
 
-## Not Doing (and Why)
+## 📁 Repository Structure
 
-- **Not Publishing to Google Play Store / Apple App Store:** App stores require paid developer licenses ($99/year for Apple, $25 for Google) and week-long review processes. A PWA delivers the same installed home screen experience instantly and for free.
-- **Not Doing Full Google Calendar OAuth in v1:** Direct `.ics` download and web intents provide universal calendar sync without forcing users through Google Cloud Console credential setups.
-- **Not Doing CodeChef in v1:** CodeChef has aggressive bot-blocking and frequent layout changes that could break during a live project presentation. LeetCode + Codeforces provide stable APIs.
-- **Not Building Complex User Accounts / Database:** Everything is driven by public usernames and client-side storage (localStorage), keeping the app lightweight, fast, and free to host.
+```
+coding-contest-agent/
+├── backend/                       # Server-side Python logic
+│   ├── __init__.py
+│   ├── main.py                   # FastAPI server & route handlers
+│   ├── models/                   # Data structures
+│   │   ├── __init__.py
+│   │   └── contest.py            # Canonical Contest schema
+│   ├── fetchers/                 # Platform APIs & scraping
+│   │   ├── __init__.py
+│   │   ├── base.py               # Abstract base contract
+│   │   ├── codeforces.py         # Codeforces REST client
+│   │   ├── leetcode.py           # LeetCode GraphQL client
+│   │   ├── codechef.py           # CodeChef fetcher + fallback
+│   │   └── service.py            # Ingestion manager & TTL cache
+│   └── calendar_engine/          # Calendar standards
+│       ├── __init__.py
+│       └── generator.py          # RFC-5545 .ics & VALARM generator
+│
+├── frontend/                      # Client-side UI
+│   └── index.html                # Mobile web hub & 1-click Google Calendar popup
+│
+├── requirements.txt               # Dependencies
+├── render.yaml                    # Cloud deployment specification
+└── README.md                      # Documentation
+```
 
 ---
 
-## Tech Stack Summary
+## 🚀 Key Features
 
-- **Backend:** Python (FastAPI) + `requests` / `httpx` + `icalendar`
-- **Frontend:** Responsive HTML5 / TailwindCSS / Vanilla JS (with PWA Web App Manifest and Service Worker)
-- **AI Brain:** Google Gemini 2.5/Flash API (Free Tier)
-- **Deployment:** Render / Vercel / Hugging Face Spaces (Free Tier)
+### Version 1 (Completed & Operational)
+- **Zero Cost Forever ($0.00):** Built entirely on free public APIs and standard calendar protocols. No credit card or paid services required.
+- **1-Click Google Calendar Event Popups:** Tap any contest card to open Google Calendar with title, timings, and alarms pre-filled!
+- **True One-Time Setup Calendar Feed:** Subscribe to `.ics` feed once on iPhone or Google Calendar for permanent background sync.
+- **Multi-Platform Aggregation:**
+  - **Codeforces:** Official REST API (Div. 1–4, Educational, Global rounds).
+  - **LeetCode:** Public GraphQL endpoint (Weekly & Biweekly contests).
+  - **CodeChef:** Structured contest ingestion with resilient fallback (Starters, DSA Monday Munch, Cook-Off).
+- **Native Phone Alarms (RFC-5545 `VALARM`):** Embeds automatic 15-minute sound/popup alarm triggers directly into calendar events for Android and iOS.
+- **Fine-Grained Filtering:** Users can filter by platform and specific contest divisions.
+- **Customizable Alarm Labels:** Choose your own lock screen alarm prefix (e.g. `🚨 Contest Alert`).
+
+### Version 2 (Planned: Generative AI Upsolve Engine)
+- **Automated Contest Debrief:** Fetches user submissions from Codeforces and LeetCode after a contest ends.
+- **AI Blunder Diagnosis:** Uses the Google Gemini API to analyze failed submissions (*Time Limit Exceeded*, *Wrong Answer*) against official contest editorials.
+- **Socratic Upsolving:** Generates progressive, spoiler-free hints to help you solve missed problems yourself.
+
+---
+
+## 💻 How to Run Locally
+
+### 1. Set up virtual environment & install dependencies
+```bash
+# Windows
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+
+# Linux / macOS
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Start the ContestPulse server
+```bash
+uvicorn backend.main:app --reload --port 8000
+```
+
+### 3. Open in browser
+Visit **`http://localhost:8000`** in your browser.
+
+---
+
+## 📡 API Endpoints
+
+| Endpoint | Method | Description | Example Query |
+| :--- | :--- | :--- | :--- |
+| `/` | `GET` | Responsive mobile web UI | `http://localhost:8000/` |
+| `/api/contests` | `GET` | JSON list of upcoming contests with live countdowns | `/api/contests?platforms=codeforces,leetcode` |
+| `/calendar.ics` | `GET` | Dynamic RFC-5545 calendar subscription feed with alarms | `/calendar.ics?platforms=codeforces,leetcode&alarm=15` |
+
+---
+
+## ☁️ Cloud Deployment (Render)
+
+1. Push your code to GitHub:
+   ```bash
+   git add .
+   git commit -m "feat: complete ContestPulse v1"
+   git push origin main
+   ```
+2. In **Render.com**, click **New +** $\rightarrow$ **Web Service**.
+3. Select your `coding-contest-agent` repository.
+4. Set:
+   * **Build Command:** `pip install -r requirements.txt`
+   * **Start Command:** `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
+5. Click **Deploy Web Service**!
