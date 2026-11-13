@@ -95,6 +95,7 @@ Visit **`http://localhost:8000`** in your browser.
 
 | Endpoint | Method | Description | Example Query |
 | :--- | :--- | :--- | :--- |
+| `/health` | `GET` | Lightweight keep-alive health check | `http://localhost:8000/health` |
 | `/` | `GET` | Responsive mobile web UI | `http://localhost:8000/` |
 | `/api/contests` | `GET` | JSON list of upcoming contests with live countdowns | `/api/contests?platforms=codeforces,leetcode` |
 | `/calendar.ics` | `GET` | Dynamic RFC-5545 calendar subscription feed with alarms | `/calendar.ics?platforms=codeforces,leetcode&alarm=15` |

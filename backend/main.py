@@ -38,6 +38,16 @@ FRONTEND_DIR.mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 
+@app.get("/health")
+async def health_check():
+    """
+    Ultra-lightweight health check endpoint.
+    Used by external cron/ping services (like cron-job.org or UptimeRobot)
+    to keep the free cloud server awake 24/7 without cold start delays.
+    """
+    return {"status": "ok", "app": "ContestPulse"}
+
+
 @app.get("/", response_class=HTMLResponse)
 async def serve_home():
     """Serves the mobile-friendly web hub from frontend/."""
