@@ -99,20 +99,10 @@ Visit **`http://localhost:8000`** in your browser.
 | `/` | `GET` | Responsive mobile web UI | `http://localhost:8000/` |
 | `/api/contests` | `GET` | JSON list of upcoming contests with live countdowns | `/api/contests?platforms=codeforces,leetcode` |
 | `/calendar.ics` | `GET` | Dynamic RFC-5545 calendar subscription feed with alarms | `/calendar.ics?platforms=codeforces,leetcode&alarm=15` |
+## Cloud Deployment 
+The cloud deployment was done with the render plat form using free tier plan of 0.1 CPU and 512 MB storage. But the drawback is that according to render policies the free tier deployed websites will shut down after 15 minutes of inactivity. The time we login again after 15 minutes of inactivity it again goes to start and load the project.
 
 ---
 
-## ☁️ Cloud Deployment (Render)
-
-1. Push your code to GitHub:
-   ```bash
-   git add .
-   git commit -m "feat: complete ContestPulse v1"
-   git push origin main
-   ```
-2. In **Render.com**, click **New +** $\rightarrow$ **Web Service**.
-3. Select your `coding-contest-agent` repository.
-4. Set:
-   * **Build Command:** `pip install -r requirements.txt`
-   * **Start Command:** `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
-5. Click **Deploy Web Service**!
+## Inactivity Issue Solution
+To overcome the inactivity of the website and to  make it online 24/7/365 we send the pings for every 10 minute interval using third party website cron-job.org console
