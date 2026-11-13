@@ -76,7 +76,7 @@ class CodeforcesFetcher(BaseFetcher):
                     id=f"cf-{contest_id}",
                     title=contest_name,
                     platform=self.platform_name,
-                    url=f"https://codeforces.com/contest/{contest_id}",
+                    url=f"https://codeforces.com/contestRegistration/{contest_id}",
                     start_time=start_time,
                     end_time=end_time,
                     duration_seconds=duration_seconds,
