@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ContestPulse — Never Miss a Coding Contest</title>
+  <title>ContestPulse — Coding Contest Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -43,10 +43,10 @@
           <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
             ContestPulse
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> Live Alarms
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> Live Sync
             </span>
           </h1>
-          <p class="text-xs text-slate-400">100% Free · 1-Click Calendar Add · Native Alarms</p>
+          <p class="text-xs text-slate-400">100% Free · Automated Contest Tracker</p>
         </div>
       </div>
       <a href="https://github.com/victoryv14/coding-contest-agent" target="_blank" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
@@ -67,7 +67,7 @@
           Never miss a coding round again.
         </h2>
         <p class="text-sm text-slate-300 leading-relaxed">
-          Filter your preferred platforms and divisions below. Click <strong class="text-brand-400">"Add to Google Calendar"</strong> on any contest to open Google Calendar with the relevant title, timings, and alarms pre-filled!
+          Track upcoming rounds across Codeforces, LeetCode, and CodeChef. Add them to your calendar with pre-filled details in one click.
         </p>
       </div>
 
@@ -77,7 +77,7 @@
         <!-- Platform & Particular Contest Categories -->
         <div>
           <div class="flex items-center justify-between mb-3">
-            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">1. Filter Platforms & Contest Types</label>
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">1. Platforms & Categories</label>
             <span class="text-xs text-brand-400 font-medium cursor-pointer hover:underline" onclick="toggleSelectAll()">Toggle All</span>
           </div>
 
@@ -158,29 +158,27 @@
           </div>
         </div>
 
-        <!-- Alarm Settings -->
+        <!-- Notification Preferences -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
           <div class="space-y-1.5">
-            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">2. Custom Event Title / Alarm Prefix</label>
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">2. Event Title Prefix</label>
             <input 
               type="text" 
               id="alarm-name-input" 
-              value="🚨 Contest Alert" 
-              placeholder="e.g. 🚨 Contest Alert"
+              value="🚨 Contest Reminder" 
+              placeholder="e.g. 🚨 Contest Reminder"
               oninput="updateFilters()"
               class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-brand-500 outline-none placeholder-slate-500"
             />
-            <p class="text-[11px] text-slate-400">This prefix will appear in your Google Calendar event title.</p>
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">3. Default Alarm Timing</label>
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">3. Reminder Timing</label>
             <select id="alarm-select" onchange="updateFilters()" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-brand-500 outline-none">
               <option value="15" selected>15 minutes before</option>
               <option value="30">30 minutes before</option>
               <option value="60">1 hour before</option>
             </select>
-            <p class="text-[11px] text-slate-400">Trigger offset for .ics feed downloads.</p>
           </div>
         </div>
 
@@ -189,16 +187,16 @@
       <!-- Quick Action Buttons -->
       <div class="mt-6 pt-6 border-t border-slate-800 flex flex-wrap gap-3">
         <a id="btn-next-gcal" href="#" target="_blank" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-sm transition transform active:scale-95 text-center min-w-[220px]">
-          <span>📅</span> Add Next Round to Google Calendar
+          <span>📅</span> Add Next Round to Calendar
         </a>
         <a id="btn-download" href="#" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-sm font-medium transition flex items-center justify-center gap-2">
-          <span>⬇️</span> Download All (.ics)
+          <span>⬇️</span> Download Feed (.ics)
         </a>
         <a id="btn-apple" href="#" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-sm font-medium transition flex items-center justify-center gap-2">
-          <span>🍏</span> Subscribe (iPhone)
+          <span>🍏</span> Subscribe (Apple)
         </a>
         <button onclick="copySubscriptionUrl()" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-sm font-medium transition flex items-center justify-center gap-2">
-          <span id="copy-icon">🔗</span> <span id="copy-text">Copy Feed Link</span>
+          <span id="copy-icon">🔗</span> <span id="copy-text">Copy Link</span>
         </button>
       </div>
 
@@ -211,7 +209,6 @@
           Upcoming Contests
           <span id="contest-count" class="text-xs bg-brand-500/10 text-brand-400 border border-brand-500/20 px-2 py-0.5 rounded-full font-mono">0</span>
         </h3>
-        <p class="text-xs text-slate-400">Click <strong>"Add to Google Calendar"</strong> on any round to open the pre-filled event popup</p>
       </div>
       <button onclick="loadContests(true)" class="text-xs text-brand-400 hover:text-brand-300 font-medium flex items-center gap-1 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
         <span>🔄</span> Refresh
@@ -230,7 +227,7 @@
 
   <!-- Footer -->
   <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
-    ContestPulse · 100% Free Open Source Coding Contest Agent
+    ContestPulse · Open Source Personal Coding Contest Agent
   </footer>
 
   <script>
@@ -289,7 +286,7 @@
 
     function getAlarmPrefix() {
       const input = document.getElementById('alarm-name-input');
-      return (input && input.value.trim()) ? input.value.trim() : '🚨 Contest Alert';
+      return (input && input.value.trim()) ? input.value.trim() : '🚨 Contest Reminder';
     }
 
     function formatGCalDate(dateStr) {
@@ -384,7 +381,7 @@
 
       document.getElementById('contest-count').innerText = filtered.length;
 
-      // Update the "Add Next Round to Google Calendar" button in the hero card
+      // Update the "Add Next Round to Calendar" button in the hero card
       const btnNextGcal = document.getElementById('btn-next-gcal');
       if (filtered.length > 0) {
         btnNextGcal.href = buildGoogleCalendarUrl(filtered[0]);
@@ -399,7 +396,6 @@
         grid.innerHTML = `
           <div class="col-span-full py-12 text-center text-slate-500 bg-slate-900/40 rounded-xl border border-slate-800">
             <p class="text-sm font-medium">No upcoming contests found matching your selected platforms and contest types.</p>
-            <p class="text-xs text-slate-600 mt-1">Try selecting more divisions above.</p>
           </div>
         `;
         return;
@@ -434,11 +430,10 @@
               <a href="${gcalUrl}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-3 rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95 text-center">
                 <span>📅</span> Add to Google Calendar
               </a>
-              <div class="flex items-center justify-between pt-1">
+              <div class="flex items-center justify-end pt-1">
                 <a href="${c.url}" target="_blank" class="text-xs font-medium text-slate-400 hover:text-white transition flex items-center gap-1">
                   View Contest Page &rarr;
                 </a>
-                <span class="text-[10px] text-slate-500">Auto-fills title & times</span>
               </div>
             </div>
 
