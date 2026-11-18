@@ -312,35 +312,57 @@
       return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(contest.url)}`;
     }
 
-    function getSubscriptionUrl() {
-      const platforms = getSelectedPlatforms().join(',');
-      const divisions = getSelectedDivisions().join(',');
-      const alarm = getAlarmMinutes();
-      const alarmName = encodeURIComponent(getAlarmPrefix());
-      const origin = window.location.origin;
+    function getSubscriptionUrl(protocol = 'https') {
+      const selectedPlatforms = getSelectedPlatforms();
+      const allPlatforms = ['codeforces', 'leetcode', 'codechef'];
+      const isAllPlatforms = allPlatforms.every(p => selectedPlatforms.includes(p));
 
-      let url = `${origin}/calendar.ics?platforms=${encodeURIComponent(platforms)}&alarm=${alarm}&alarm_name=${alarmName}`;
-      if (divisions) {
-        url += `&divisions=${encodeURIComponent(divisions)}`;
+      const selectedDivs = getSelectedDivisions();
+      const totalDivCbs = document.querySelectorAll('input.div-cb').length;
+      const isAllDivs = selectedDivs.length === totalDivCbs;
+
+      const alarm = getAlarmMinutes();
+      const rawPrefix = getAlarmPrefix().replace(/[^\x00-\x7F]/g, "").trim();
+      const cleanPrefix = rawPrefix || "Contest Reminder";
+
+      const origin = window.location.origin;
+      const cleanHost = origin.replace(/^https?:\/\//, '');
+      const scheme = protocol === 'webcal' ? 'webcal://' : 'https://';
+
+      const params = new URLSearchParams();
+
+      if (!isAllPlatforms && selectedPlatforms.length > 0) {
+        params.set('platforms', selectedPlatforms.join(','));
       }
-      return url;
+      if (!isAllDivs && selectedDivs.length > 0) {
+        params.set('divisions', selectedDivs.join(','));
+      }
+      if (alarm !== '15') {
+        params.set('alarm', alarm);
+      }
+      if (cleanPrefix !== 'Contest Reminder') {
+        params.set('alarm_name', cleanPrefix);
+      }
+
+      const qs = params.toString();
+      return `${scheme}${cleanHost}/calendar.ics${qs ? '?' + qs : ''}`;
     }
 
     function updateFilters() {
-      const subUrl = getSubscriptionUrl();
+      const httpUrl = getSubscriptionUrl('https');
+      const webcalUrl = getSubscriptionUrl('webcal');
 
-      // 1-Click Google Calendar Subscription
+      // 1-Click Google Calendar Subscription (requires webcal:// scheme inside cid=)
       const btnGcal = document.getElementById('btn-gcal-sub');
       if (btnGcal) {
-        btnGcal.href = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(subUrl)}`;
+        btnGcal.href = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcalUrl)}`;
       }
 
       // Download direct link
       const btnDownload = document.getElementById('btn-download');
-      if (btnDownload) btnDownload.href = subUrl;
+      if (btnDownload) btnDownload.href = httpUrl;
 
       // WebCal link for iOS Safari / Apple Calendar / Outlook
-      const webcalUrl = subUrl.replace(/^https?:\/\//, 'webcal://');
       const btnApple = document.getElementById('btn-apple');
       if (btnApple) btnApple.href = webcalUrl;
 
@@ -348,11 +370,11 @@
     }
 
     function copySubscriptionUrl() {
-      const url = getSubscriptionUrl();
+      const url = getSubscriptionUrl('https');
       navigator.clipboard.writeText(url).then(() => {
         const textSpan = document.getElementById('copy-text');
         textSpan.innerText = 'Copied!';
-        setTimeout(() => textSpan.innerText = 'Copy Link', 2000);
+        setTimeout(() => textSpan.innerText = 'Copy Feed Link', 2000);
       });
     }
 

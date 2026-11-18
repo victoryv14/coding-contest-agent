@@ -1,6 +1,6 @@
 # ContestPulse (coding-contest-agent)
 
-> **A 100% free, one-time setup contest calendar agent that syncs upcoming rounds from Codeforces, LeetCode, and CodeChef directly to your smartphone with native 15-minute phone alarms.**
+> **A 100% free, one-time setup contest calendar agent that syncs upcoming rounds from Codeforces, LeetCode, and CodeChef directly to your calendar with 1-click automated subscriptions and reminders.**
 
 ---
 
@@ -10,7 +10,7 @@ Competitive programmers often miss scheduled rounds because:
 * Automated phone calls and SMS require expensive paid telecom APIs (Twilio, Exotel).
 * Manually adding individual contests to Google Calendar is tedious and easy to forget.
 
-**ContestPulse** solves this with a **zero-cost, one-time setup live calendar subscription feed (`.ics` / WebCal)** and **1-click Google Calendar Event Popups**. Users configure their platform and division preferences once, and their phone calendar automatically stays up to date with loud alarms ringing 15 minutes before every round.
+**ContestPulse** solves this with **1-Click Universal Calendar Auto-Sync (`.ics` / WebCal)**. Users configure their platform and category preferences once, and their phone/desktop calendar automatically stays up to date with all upcoming and future rounds synced in the background.
 
 ---
 
@@ -36,7 +36,7 @@ coding-contest-agent/
 │       └── generator.py          # RFC-5545 .ics & VALARM generator
 │
 ├── frontend/                      # Client-side UI
-│   └── index.html                # Mobile web hub & 1-click Google Calendar popup
+│   └── index.html                # 1-Click Auto-Sync hub & contest schedule
 │
 ├── requirements.txt               # Dependencies
 ├── render.yaml                    # Cloud deployment specification
@@ -49,15 +49,16 @@ coding-contest-agent/
 
 ### Version 1 (Completed & Operational)
 - **Zero Cost Forever ($0.00):** Built entirely on free public APIs and standard calendar protocols. No credit card or paid services required.
-- **1-Click Google Calendar Event Popups:** Tap any contest card to open Google Calendar with title, timings, and alarms pre-filled!
-- **True One-Time Setup Calendar Feed:** Subscribe to `.ics` feed once on iPhone or Google Calendar for permanent background sync.
+- **⚡ 1-Click Google Calendar Auto-Sync:** One click subscribes your Google Calendar directly to the live feed. All current and future rounds automatically appear on your schedule without adding them one-by-one.
+- **🍏 1-Click Apple / Outlook Auto-Sync:** Native `webcal://` integration that opens your device's calendar app and sets up automatic background synchronization in a single tap.
+- **Direct Contest Access:** Contest cards provide one-click direct links to registration and problem pages on Codeforces, LeetCode, and CodeChef.
 - **Multi-Platform Aggregation:**
   - **Codeforces:** Official REST API (Div. 1–4, Educational, Global rounds).
   - **LeetCode:** Public GraphQL endpoint (Weekly & Biweekly contests).
   - **CodeChef:** Structured contest ingestion with resilient fallback (Starters, DSA Monday Munch, Cook-Off).
-- **Native Phone Alarms (RFC-5545 `VALARM`):** Embeds automatic 15-minute sound/popup alarm triggers directly into calendar events for Android and iOS.
-- **Fine-Grained Filtering:** Users can filter by platform and specific contest divisions.
-- **Customizable Alarm Labels:** Choose your own lock screen alarm prefix (e.g. `🚨 Contest Alert`).
+- **Embedded Reminder Alarms (RFC-5545 `VALARM`):** Generates standard reminder offsets (15m, 30m, 1h) directly inside the `.ics` events for compatible calendar clients.
+- **Fine-Grained Filtering:** Filter by platform and specific contest categories/divisions.
+- **Customizable Event Prefixes:** Customize the reminder title prefix (e.g., `🚨 Contest Reminder`).
 
 ### Version 2 (Planned: Generative AI Upsolve Engine)
 - **Automated Contest Debrief:** Fetches user submissions from Codeforces and LeetCode after a contest ends.
