@@ -187,9 +187,9 @@
       <!-- Quick Action Buttons -->
       <div class="mt-6 pt-6 border-t border-slate-800 space-y-3">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <a id="btn-gcal-sub" href="#" target="_blank" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-sm transition transform active:scale-95 text-center">
-            <span>⚡</span> 1-Click Auto-Sync (Google Calendar)
-          </a>
+          <button onclick="syncGoogleCalendar()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-sm transition transform active:scale-95 text-center cursor-pointer">
+            <span>⚡</span> Auto-Sync to Google Calendar
+          </button>
           <a id="btn-apple" href="#" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl border border-slate-700 flex items-center justify-center gap-2 text-sm transition transform active:scale-95 text-center">
             <span>🍏</span> 1-Click Auto-Sync (Apple / Outlook)
           </a>
@@ -237,6 +237,17 @@
   <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
     ContestPulse · Open Source Personal Coding Contest Agent
   </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 max-w-sm sm:max-w-md bg-slate-900 border border-brand-500/80 text-slate-100 p-4 rounded-2xl shadow-2xl shadow-brand-500/20 transition-all duration-300 opacity-0 pointer-events-none translate-y-2 z-50 flex items-start gap-3 backdrop-blur bg-slate-900/95">
+    <div class="w-8 h-8 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0 text-base">
+      ⚡
+    </div>
+    <div class="space-y-1">
+      <p id="toast-title" class="text-xs font-bold text-white tracking-wide">Feed Link Copied!</p>
+      <p id="toast-msg" class="text-xs text-slate-300 leading-relaxed">Opening Google Calendar...</p>
+    </div>
+  </div>
 
   <script>
     let rawContests = [];
@@ -348,15 +359,41 @@
       return `${scheme}${cleanHost}/calendar.ics${qs ? '?' + qs : ''}`;
     }
 
+    let toastTimeout;
+    function showToast(title, message) {
+      const toast = document.getElementById('toast');
+      const toastTitle = document.getElementById('toast-title');
+      const toastMsg = document.getElementById('toast-msg');
+      if (!toast) return;
+
+      toastTitle.innerText = title;
+      toastMsg.innerHTML = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+      }, 6500);
+    }
+
+    function syncGoogleCalendar() {
+      const url = getSubscriptionUrl('https');
+      navigator.clipboard.writeText(url).then(() => {
+        showToast(
+          '⚡ Feed Link Copied!',
+          'Google Calendar opened in a new tab.<br>Just paste (<kbd class="px-1 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-[10px]">Ctrl+V</kbd>) into <strong>"URL of calendar"</strong> and click <strong>"Add calendar"</strong>.'
+        );
+        window.open('https://calendar.google.com/calendar/u/0/r/settings/addbyurl', '_blank');
+      }).catch(() => {
+        window.open('https://calendar.google.com/calendar/u/0/r/settings/addbyurl', '_blank');
+      });
+    }
+
     function updateFilters() {
       const httpUrl = getSubscriptionUrl('https');
       const webcalUrl = getSubscriptionUrl('webcal');
-
-      // 1-Click Google Calendar Subscription (requires webcal:// scheme inside cid=)
-      const btnGcal = document.getElementById('btn-gcal-sub');
-      if (btnGcal) {
-        btnGcal.href = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcalUrl)}`;
-      }
 
       // Download direct link
       const btnDownload = document.getElementById('btn-download');
@@ -372,6 +409,7 @@
     function copySubscriptionUrl() {
       const url = getSubscriptionUrl('https');
       navigator.clipboard.writeText(url).then(() => {
+        showToast('📋 Link Copied!', 'The calendar feed URL is copied. You can paste it into Google Calendar, Outlook, or Apple Calendar.');
         const textSpan = document.getElementById('copy-text');
         textSpan.innerText = 'Copied!';
         setTimeout(() => textSpan.innerText = 'Copy Feed Link', 2000);
